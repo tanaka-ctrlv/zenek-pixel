@@ -20,28 +20,21 @@ body {
   background: white;
   color: black;
   font-family: "Zenek Pixel", monospace;
-  min-height: 100vh;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
 }
 
-/* they keep coming from wall to wall lol */
+/* whole wall */
 .type-wall {
+  padding: clamp(12px, 3vw, 24px);
   display: flex;
   flex-direction: column;
   gap: clamp(8px, 1.5vw, 12px);
-  padding: clamp(12px, 3vw, 24px);
-  width: 100%;
-  max-width: 1200px; /* keeps things from stretching too wide on big screens */
   min-height: 100vh;
 }
 
-/* each marquee rowwwww */
+/* each marquee row */
 .marquee-row {
   overflow: hidden;
   white-space: nowrap;
-  flex: 1; /* let rows share the vertical space */
 }
 
 /* moving track */
@@ -51,7 +44,7 @@ body {
   animation: scroll-left 24s linear infinite;
 }
 
-/* variants for different speed */
+/* variants for different speed / direction */
 .marquee-row.slow .marquee-track {
   animation-duration: 32s;
 }
@@ -61,7 +54,7 @@ body {
   animation-duration: 28s;
 }
 
-/* the tyoe tile (boarders?) */
+/* the type tile – no borders */
 .type-tile {
   display: inline-block;
   padding: clamp(6px, 1.3vw, 12px) clamp(10px, 2.2vw, 24px);
@@ -78,29 +71,37 @@ body {
 
 /* posi axis loop */
 @keyframes posi-pulse {
-  from { font-variation-settings: "POSI" 0; }
-  to   { font-variation-settings: "POSI" 100; }
+  from {
+    font-variation-settings: "POSI" 0;
+  }
+  to {
+    font-variation-settings: "POSI" 100;
+  }
 }
 
-/* horizontal scroll animationsss */
+/* horizontal scroll animations */
 @keyframes scroll-left {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes scroll-right {
-  from { transform: translateX(-50%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-/* ===== responsiiiiiiiiive ===== */
+/* ===== responsive tweaks ===== */
 
 /* small screens: tighter layout, slightly smaller type */
 @media (max-width: 600px) {
-  body {
-    align-items: stretch;
-  }
-
   .type-wall {
     gap: 6px;
     padding: 12px;
@@ -113,13 +114,9 @@ body {
   }
 }
 
-/* Very tall / large screens: let the type breathe more */
+/* very large screens: let the type breathe more */
 @media (min-width: 1200px) {
   .type-tile {
     font-size: 2.2rem;
   }
 }
-
-
-
-
