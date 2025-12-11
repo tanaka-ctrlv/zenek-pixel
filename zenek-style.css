@@ -1,0 +1,62 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Smooth scroll behavior (optional) */
+html {
+  scroll-behavior: smooth;
+}
+
+/* LANDING SECTION — full viewport height, black background */
+.landing {
+  height: 100vh;
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: clamp(2rem, 8vw, 6rem);
+  font-family: "Zenek Pixel", sans-serif;
+}
+
+/* CONTENT SECTION — becomes visible after scrolling past landing */
+.content {
+  min-height: 200vh; /* just to give space to scroll */
+  background: white;
+  color: black;
+  padding: clamp(1rem, 4vw, 4rem);
+}
+
+/*
+ OPTIONAL:
+ Add a smooth faded transition between backgrounds
+*/
+body {
+  transition: background-color 0.4s ease;
+}
+
+/*
+ MAGIC PART:
+ This selector changes the body background to white
+ once the landing section is no longer fully visible.
+ (Works in all modern browsers)
+*/
+body:has(.landing:below) {
+  background-color: white;
+}
+
+/* While landing is still in view, background remains black */
+body:has(.landing:above) {
+  background-color: white;
+}
+
+/* Default fallback */
+body {
+  background-color: black;
+}
