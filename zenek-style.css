@@ -8,26 +8,26 @@
   font-display: swap;
 }
 
-/* resetting */
+/* reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* page base */
+/* base layout */
 body {
   background: white;
   color: black;
   font-family: "Zenek Pixel", monospace;
 }
 
-/* whole wall */
+/* the full wall */
 .type-wall {
-  padding: clamp(12px, 3vw, 24px);
+  padding: 0;          /* no padding around rows */
   display: flex;
   flex-direction: column;
-  gap: clamp(8px, 1.5vw, 12px);
+  gap: 0;              /* remove vertical spacing */
   min-height: 100vh;
 }
 
@@ -35,88 +35,67 @@ body {
 .marquee-row {
   overflow: hidden;
   white-space: nowrap;
+  line-height: 1;
 }
 
-/* moving track */
+/* the moving track */
 .marquee-track {
   display: inline-flex;
   will-change: transform;
   animation: scroll-left 24s linear infinite;
 }
 
-/* variants for different speed / direction */
+/* speed variations */
 .marquee-row.slow .marquee-track {
   animation-duration: 32s;
 }
 
-.marquee-row.reverse .marquee-track {
+/*.marquee-row.reverse .marquee-track {
   animation-name: scroll-right;
   animation-duration: 28s;
-}
+}*/
 
-/* the type tile – no borders */
+/* each 3-line type block */
 .type-tile {
   display: inline-block;
-  padding: clamp(6px, 1.3vw, 12px) clamp(10px, 2.2vw, 24px);
+  padding: 0;              /* remove inner spacing */
+  margin: 0;               /* remove spacing between tiles */
   font-size: clamp(1rem, 2.3vw, 2.2rem);
-  line-height: 1.1;
-
-  /* space between tiles */
-  margin-right: clamp(8px, 1.5vw, 16px);
-
+  line-height: 1;          /* tighten multi-line blocks */
+  
   /* variable font animation */
   font-variation-settings: "POSI" 0;
-  animation: posi-pulse 2.2s ease-in-out infinite alternate;
+  animation: posi-pulse 2s ease-in-out infinite alternate;
 }
 
-/* posi axis loop */
+/* animate POSI axis */
 @keyframes posi-pulse {
-  from {
-    font-variation-settings: "POSI" 0;
-  }
-  to {
-    font-variation-settings: "POSI" 100;
-  }
+  0% { font-variation-settings: "POSI" 0; }
+  100% { font-variation-settings: "POSI" 100; }
 }
 
-/* horizontal scroll animations */
+/* horizontal scrolling */
 @keyframes scroll-left {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes scroll-right {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
+
 
 /* ===== responsive tweaks ===== */
 
-/* small screens: tighter layout, slightly smaller type */
 @media (max-width: 600px) {
-  .type-wall {
-    gap: 6px;
-    padding: 12px;
-  }
-
   .type-tile {
-    padding: 6px 12px;
     font-size: clamp(0.9rem, 4vw, 1.4rem);
-    margin-right: 10px;
   }
 }
 
-/* very large screens: let the type breathe more */
 @media (min-width: 1200px) {
   .type-tile {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
   }
 }
