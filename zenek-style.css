@@ -87,7 +87,7 @@ body.loaded { overflow: auto; }
 }
 
 .info p {
-  font-family: sans-serif;
+  font-family: 'Courier New', Courier, monospace;
   font-size: 1rem;
   opacity: 0.85;
   max-width: 60ch;
