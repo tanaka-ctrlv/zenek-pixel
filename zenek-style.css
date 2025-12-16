@@ -8,9 +8,6 @@
   font-display: swap;
 }
 
-
-
-
 /* reset */
 * {
   margin: 0;
@@ -23,19 +20,132 @@ body {
   background: white;
   color: black;
   font-family: "Zenek Pixel", monospace;
+  overflow: hidden; /* NOTE: prevents scroll while loader is up */
 }
 
-/* the full wall */
+/* === LOADER OVERLAY === */
+/*
+  LOADER NOTES (your style):
+  - fixed overlay on top of everything
+  - using an image instead of the animated SVG wall to avoid lag
+  - ref: common loader pattern: fixed overlay + animation + animationend cleanup
+*/
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: white;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.loader-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* switch to contain if you want full image visible */
+  display: block;
+}
+
+/* LOADER EXIT ANIMATION */
+.loader.hide {
+  animation: loader-slide-down 1.8s ease-in-out forwards;
+}
+
+@keyframes loader-slide-down {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(80%); opacity: 0.7; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+/* === PAGE CONTENT REVEAL === */
+.page-content {
+  opacity: 0;
+}
+
+.page-content.show {
+  opacity: 1;
+  transition: opacity 1.3s ease;
+}
+
+/* Body scroll restored after loader is gone */
+body.loaded {
+  overflow: auto;
+}
+
+/* HERO */
+.hero {
+  padding: 0 0 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero img {
+  max-width: min(760px, 92vw);
+  height: auto;
+  display: block;
+}
+
+/* INFO SECTION */
+.info {
+  padding: 1.5rem 1rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.info h1 {
+  font-size: 2.2rem;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
+}
+
+.info p {
+  font-family: sans-serif;
+  font-size: 1rem;
+  opacity: 0.85;
+  max-width: 60ch;
+  margin: 0 auto 1.2rem;
+}
+
+.info-links {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  color: black;
+  border: 1px solid black;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+}
+
+/* TYPE WALL */
 .type-wall {
-  padding: 0;          /* no padding around rows */
+  padding: 0;                 /* no padding around rows */
   display: flex;
   flex-direction: column;
-  gap: 0;              /* remove vertical spacing */
-  min-height: 100vh;
+  gap: 0;                     /* remove vertical spacing between rows */
 }
 
-/* each marquee row */
+/* each marquee row: variables control variety */
+/*
+  VARIETY NOTES:
+  - ref: CSS custom properties let each row define speed/dir/size
+  - keeps HTML clean: just swap classes instead of rewriting CSS
+*/
 .marquee-row {
+  --dur: 24s;                  /* default speed */
+  --dir: 1;                    /* 1 = scroll left, -1 = scroll right */
+  --tile-size: clamp(2rem, 4.6vw, 4.4rem); /* default size (already "bigger") */
+
   overflow: hidden;
   white-space: nowrap;
   line-height: 1;
@@ -45,60 +155,47 @@ body {
 .marquee-track {
   display: inline-flex;
   will-change: transform;
-  animation: scroll-left 24s linear infinite;
+  animation: scroll var(--dur) linear infinite;
 }
 
-/* speed variations */
-.marquee-row.slow .marquee-track {
-  animation-duration: 32s;
-}
-
-/*.marquee-row.reverse .marquee-track {
-  animation-name: scroll-right;
-  animation-duration: 28s;
-}*/
-
-/* each 3-line type block */
+/* tiles */
 .type-tile {
   display: inline-block;
-  padding: 0;              /* remove inner spacing */
-  margin: 0;               /* remove spacing between tiles */
-  font-size: clamp(1rem, 2.3vw, 2.2rem);
-  line-height: 1;          /* tighten multi-line blocks */
-  
+  padding: 0;
+  margin: 0;
+
+  font-size: var(--tile-size);
+  line-height: 1;
+
   /* variable font animation */
   font-variation-settings: "POSI" 0;
   animation: posi-pulse 2s ease-in-out infinite alternate;
 }
 
-/* animate POSI axis */
+/* POSI axis animation */
 @keyframes posi-pulse {
-  0% { font-variation-settings: "POSI" 0; }
+  0%   { font-variation-settings: "POSI" 0; }
   100% { font-variation-settings: "POSI" 100; }
 }
 
-/* horizontal scrolling */
-@keyframes scroll-left {
+/* direction-aware scrolling (the seam stays clean because we repeat content) */
+@keyframes scroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(calc(-50% * var(--dir))); }
 }
 
-@keyframes scroll-right {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
+/* --- Variety helper classes (easy wins) --- */
+.fast { --dur: 14s; }
+.medium { --dur: 22s; }
+.slow { --dur: 36s; }
 
+.reverse { --dir: -1; }
 
-/* ===== responsive tweaks ===== */
+.small { --tile-size: clamp(1.4rem, 3.2vw, 3.2rem); }
+.big   { --tile-size: clamp(2.8rem, 6.4vw, 6rem); }
 
+/* mobile tweaks */
 @media (max-width: 600px) {
-  .type-tile {
-    font-size: clamp(0.9rem, 4vw, 1.4rem);
-  }
-}
-
-@media (min-width: 1200px) {
-  .type-tile {
-    font-size: 2.4rem;
-  }
+  .info h1 { font-size: 1.8rem; }
+  .btn { font-size: 0.95rem; }
 }
